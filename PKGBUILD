@@ -23,7 +23,7 @@ sha512sums=('c9e4c75e94d745837208bf877b19c4e4e46df1e78082d21e716f52c9f9d93eaabbe
 validpgpkeys=(5AC1A08B03BD7A313E0A955AF5E6E9EEB9461DD7
               DA23579A74D4AD9AF9D3F945CEFAC8EAAF17519D)
 
-pkgdesc="A compatibility layer for running Windows programs - Staging branch"
+pkgdesc="A compatibility layer for running Windows programs - Staging branch, installed to /opt to avoid conflicting with other wine versions"
 url="http://www.wine-staging.com"
 arch=(x86_64)
 options=(staticlibs)
@@ -131,8 +131,8 @@ build() {
 
   cd "$srcdir/$pkgname-64-build"
   ../$pkgname/configure \
-    --prefix=/opt/usr \
-    --libdir=/opt/usr/lib \
+    --prefix=/opt/wine-staging/usr \
+    --libdir=/opt/wine-staging/usr/lib \
     --with-x \
     --with-gstreamer \
     --enable-win64 \
@@ -145,11 +145,11 @@ build() {
   export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
   cd "$srcdir/$pkgname-32-build"
   ../$pkgname/configure \
-    --prefix=/opt/usr \
+    --prefix=/opt/wine-staging/usr \
     --with-x \
     --with-gstreamer \
     --with-xattr \
-    --libdir=/opt/usr/lib32 \
+    --libdir=/opt/wine-staging/usr/lib32 \
     --with-wine64="$srcdir/$pkgname-64-build"
 
   make
@@ -159,15 +159,15 @@ package() {
   msg2 "Packaging Wine-32..."
   cd "$srcdir/$pkgname-32-build"
 
-  make prefix="$pkgdir/opt/usr" \
-    libdir="$pkgdir/opt/usr/lib32" \
-    dlldir="$pkgdir/opt/usr/lib32/wine" install
+  make prefix="$pkgdir/opt/wine-staging/usr" \
+    libdir="$pkgdir/opt/wine-staging/usr/lib32" \
+    dlldir="$pkgdir/opt/wine-staging/usr/lib32/wine" install
 
   msg2 "Packaging Wine-64..."
   cd "$srcdir/$pkgname-64-build"
-  make prefix="$pkgdir/opt/usr" \
-    libdir="$pkgdir/opt/usr/lib" \
-    dlldir="$pkgdir/opt/usr/lib/wine" install
+  make prefix="$pkgdir/opt/wine-staging/usr" \
+    libdir="$pkgdir/opt/wine-staging/usr/lib" \
+    dlldir="$pkgdir/opt/wine-staging/usr/lib/wine" install
 
   # Font aliasing settings for Win32 applications
   install -d "$pkgdir"/etc/fonts/conf.{avail,d}
